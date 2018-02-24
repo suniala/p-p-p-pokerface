@@ -75,6 +75,6 @@
                    [full-house? 6]
                    [four-of-a-kind? 7]
                    [straight-flush? 8]}
-        hand-points (fn [[gets-points? points]] (if (gets-points? hand) points 0))
-        points (map hand-points checkers)]
-    (apply max points)))
+        hand-value (fn [[gets-value? value]] (if (gets-value? hand) value 0))
+        value-candidates (map hand-value checkers)]
+    (apply max value-candidates)))

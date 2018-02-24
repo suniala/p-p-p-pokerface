@@ -43,10 +43,38 @@
       (kind-counts? [1 4] hand)))
 
 (defn straight? [hand]
-  nil)
+  (let [straight-up-to? (fn [ranks, highest] (= ranks (range (- highest 4) (+ highest 1))))
+        ranks (map rank hand)
+        low-ace-ranks (sort (replace {14 1} ranks))
+        high-ace-ranks (sort ranks)]
+    (or (straight-up-to? low-ace-ranks 5)
+        (straight-up-to? high-ace-ranks 6)
+        (straight-up-to? high-ace-ranks 7)
+        (straight-up-to? high-ace-ranks 8)
+        (straight-up-to? high-ace-ranks 9)
+        (straight-up-to? high-ace-ranks 10)
+        (straight-up-to? high-ace-ranks 11)
+        (straight-up-to? high-ace-ranks 12)
+        (straight-up-to? high-ace-ranks 13)
+        (straight-up-to? high-ace-ranks 14))))
 
 (defn straight-flush? [hand]
-  nil)
+  (and (flush? hand)
+       (straight? hand)))
+
+(defn high-card? [hand]
+  true)
 
 (defn value [hand]
-  nil)
+  (let [checkers #{[high-card? 0]
+                   [pair? 1]
+                   [two-pairs? 2]
+                   [three-of-a-kind? 3]
+                   [straight? 4]
+                   [flush? 5]
+                   [full-house? 6]
+                   [four-of-a-kind? 7]
+                   [straight-flush? 8]}
+        hand-points (fn [[gets-points? points]] (if (gets-points? hand) points 0))
+        points (map hand-points checkers)]
+    (apply max points)))
